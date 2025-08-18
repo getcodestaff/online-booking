@@ -57,4 +57,6 @@ async def root():
 if __name__ == "__main__":
     # Use 0.0.0.0 to bind to all interfaces for Render deployment
     port = int(os.getenv("PORT", 8002))
+    print(f"PORT environment variable: {os.getenv('PORT', 'NOT SET')}")
+    print(f"Starting server on 0.0.0.0:{port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
