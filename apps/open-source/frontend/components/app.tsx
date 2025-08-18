@@ -23,7 +23,7 @@ interface AppProps {
 
 export function App({ appConfig, livekitUrl, apiUrl }: AppProps) {
   const [sessionStarted, setSessionStarted] = useState(false);
-  const { connectionDetails, refreshConnectionDetails } = useConnectionDetails({ livekitUrl, apiUrl });
+  const { connectionDetails, refreshConnectionDetails } = useConnectionDetails();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [leadData, setLeadData] = useState(null);
 
