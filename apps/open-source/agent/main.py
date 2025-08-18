@@ -150,6 +150,21 @@ def prewarm(proc: agents.JobProcess):
 
 if __name__ == "__main__":
     logging.info("Starting InputRight (Open Source) Agent Worker...")
+    
+    # Debug: Log environment variables for LiveKit connection
+    livekit_url = os.getenv("LIVEKIT_URL")
+    livekit_api_key = os.getenv("LIVEKIT_API_KEY")
+    livekit_api_secret = os.getenv("LIVEKIT_API_SECRET")
+    
+    logging.info(f"LiveKit URL: {livekit_url}")
+    logging.info(f"LiveKit API Key: {'***' if livekit_api_key else 'NOT SET'}")
+    logging.info(f"LiveKit API Secret: {'***' if livekit_api_secret else 'NOT SET'}")
+    
+    if not livekit_url or not livekit_api_key or not livekit_api_secret:
+        logging.error("Missing required LiveKit environment variables!")
+        logging.error("Please set LIVEKIT_URL, LIVEKIT_API_KEY, and LIVEKIT_API_SECRET")
+        exit(1)
+    
     agents.cli.run_app(
         agents.WorkerOptions(
             request_fnc=request_fnc,
