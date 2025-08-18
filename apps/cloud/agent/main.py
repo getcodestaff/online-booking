@@ -21,6 +21,10 @@ from livekit.plugins import deepgram, groq, silero, cartesia
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Debug environment variables
+LIVEKIT_URL = os.getenv("LIVEKIT_URL")
+logging.info(f"LIVEKIT_URL from environment: {LIVEKIT_URL}")
+
 INTERNAL_API_URL = os.getenv("INTERNAL_API_URL")
 INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY")
 

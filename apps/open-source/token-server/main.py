@@ -55,4 +55,6 @@ async def root():
     return {"message": "Chat To Form (Open Source) Token Server is running."}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8002)
+    # Use 0.0.0.0 to bind to all interfaces for Render deployment
+    port = int(os.getenv("PORT", 8002))
+    uvicorn.run(app, host="0.0.0.0", port=port)
