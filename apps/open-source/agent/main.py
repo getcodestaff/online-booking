@@ -117,12 +117,8 @@ async def entrypoint(ctx: agents.JobContext):
         await session.start(room=ctx.room, agent=agent)
         ctx.room.local_participant.register_rpc_method("submit_lead_form", submit_lead_form_handler)
 
-        try:
-            await asyncio.wait_for(greeting_allowed.wait(), timeout=20.0)
-            await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
-        except asyncio.TimeoutError:
-            logging.warning("Timed out waiting for user audio track. Not sending greeting.")
-            session_ended.set()
+        # Start talking immediately without waiting for user audio track
+        await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
 
         await session_ended.wait()
         await session.aclose()
