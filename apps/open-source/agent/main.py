@@ -44,10 +44,33 @@ async def entrypoint(ctx: agents.JobContext):
         with open("prompt.template", "r") as f:
             prompt_template = Template(f.read())
         
-        instructions = prompt_template.substitute(
-            business_name=os.getenv("BUSINESS_NAME", "the company"),
-            knowledge_base=os.getenv("KNOWLEDGE_BASE", "No information provided.")
-        )
+        # Customize instructions based on room name
+        room_name = ctx.room.name
+        if "devin" in room_name.lower():
+            # Ashley's personality instructions (Devin's personal assistant)
+            instructions = (
+                f"You are Ashley, Devin's personal assistant. You are reaching out to discuss Devin's AI system, which books appointments and fills forms with 100% accuracy. "
+                f"You have a warm, professional, and engaging personality with a natural, friendly tone that feels personal and respects the recipient's time. "
+                f"Your primary goal is to introduce Devin's AI system and its benefits. "
+                f"Your secondary goal is to capture interest and schedule 15-minute meetings to discuss the AI system. "
+                f"If the user shows interest, you should collect their name, their role/industry, and their email address to schedule a call. "
+                f"Once you have naturally collected the user's name, their role/industry, and their email address, "
+                f"you MUST call the `present_verification_form` tool. "
+                f"After you call the tool and receive the confirmation message 'The verification form was successfully displayed to the user.', "
+                f"your next response MUST be to instruct the user to check the details on the form and click the send button if they are correct. "
+                f"Also, let them know they can either edit the form directly or tell you if they want to make any changes. "
+                f"If the user asks you to change any of the details while the form is displayed, you MUST call the `present_verification_form` tool again with the updated information. "
+                f"Highlight the AI's perfect performance and how it can benefit their work. "
+                f"Offer to schedule a call with flexible time slots or share the demo link (https://voice-sell-demo.onrender.com/) for them to explore. "
+                f"Be confident, tailored, and focused on building interest and trust. "
+                f"Business Information: Devin's AI system books appointments and fills forms with 100% accuracy, providing solutions for sales, customer service, and SMS using AI agents."
+            )
+        else:
+            # Default instructions
+            instructions = prompt_template.substitute(
+                business_name=os.getenv("BUSINESS_NAME", "the company"),
+                knowledge_base=os.getenv("KNOWLEDGE_BASE", "No information provided.")
+            )
 
         await ctx.connect()
         logging.info("Agent connected to the room.")
@@ -59,21 +82,9 @@ async def entrypoint(ctx: agents.JobContext):
         # Use the pre-warmed VAD model from userdata
         vad = ctx.proc.userdata["vad"]
         
-        # Use the appropriate TTS client based on room name
-        room_name = ctx.room.name
-        logging.info(f"Room name: {room_name}")
-        if "devin" in room_name.lower():
-            tts = ctx.proc.userdata["tts_devin"]
-            logging.info("Using Devin's voice clone for this session")
-            # Test the TTS configuration
-            try:
-                logging.info("Testing Devin's TTS configuration...")
-                # This will help us see if there are any initialization errors
-            except Exception as e:
-                logging.error(f"Error with Devin's TTS configuration: {e}")
-        else:
-            tts = ctx.proc.userdata["tts_default"]
-            logging.info("Using default sonic-english voice for this session")
+        # Use the same TTS client for all sessions
+        tts = ctx.proc.userdata["tts_default"]
+        logging.info("Using sonic-english voice for this session")
 
         session = agents.AgentSession(
             stt=stt,
@@ -137,14 +148,13 @@ async def entrypoint(ctx: agents.JobContext):
             logging.info("Agent running as voice-sell-agent")
 
         # Start talking immediately without waiting for user audio track
+        room_name = ctx.room.name
         if "devin" in room_name.lower():
-            logging.info("Attempting to speak with Devin's voice...")
-            await session.say(f"Thank you for calling Voice Sell AI. This is Devin speaking. How can I help you today?", allow_interruptions=True)
-            logging.info("Successfully spoke with Devin's voice")
+            logging.info("Using Ashley's personality for this session")
+            await session.say(f"Hi there! This is Ashley, Devin's personal assistant. I'm reaching out to discuss Devin's AI system that books appointments and fills forms with 100% accuracy. How are you today?", allow_interruptions=True)
         else:
-            logging.info("Attempting to speak with default voice...")
+            logging.info("Using default personality for this session")
             await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
-            logging.info("Successfully spoke with default voice")
 
         await session_ended.wait()
         await session.aclose()
@@ -170,13 +180,10 @@ def prewarm(proc: agents.JobProcess):
     proc.userdata["vad"] = silero.VAD.load()
     logging.info("Prewarm complete: VAD model loaded.")
     
-    # Initialize both TTS configurations
-    proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
-    proc.userdata["tts_devin"] = cartesia.TTS(
-        model="sonic-2",
-        voice={"mode": "id", "id": "095ba65e-b324-4687-9621-b8e5f6a6fa76"}
-    )
-    logging.info("Prewarm complete: Cartesia TTS clients initialized.")
+            # Initialize TTS configuration
+        proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
+        logging.info("TTS created successfully")
+        logging.info("Prewarm complete: Cartesia TTS client initialized.")
 
 if __name__ == "__main__":
     logging.info("Starting InputRight (Open Source) Agent Worker...")
