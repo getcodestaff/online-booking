@@ -141,18 +141,16 @@ async def entrypoint(ctx: agents.JobContext):
         await session.start(room=ctx.room, agent=agent)
         ctx.room.local_participant.register_rpc_method("submit_lead_form", submit_lead_form_handler)
         
+        # Start talking immediately without waiting for user audio track
+        room_name = ctx.room.name
+        
         # Log which agent identity we're using
         if "devin" in room_name.lower():
             logging.info("Agent running as devin-voice-sell-agent")
-        else:
-            logging.info("Agent running as voice-sell-agent")
-
-        # Start talking immediately without waiting for user audio track
-        room_name = ctx.room.name
-        if "devin" in room_name.lower():
             logging.info("Using Ashley's personality for this session")
             await session.say(f"Hi there! This is Ashley, Devin's personal assistant. I'm reaching out to discuss Devin's AI system that books appointments and fills forms with 100% accuracy. How are you today?", allow_interruptions=True)
         else:
+            logging.info("Agent running as voice-sell-agent")
             logging.info("Using default personality for this session")
             await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
 
