@@ -16,7 +16,7 @@ export default function useConnectionDetails() {
       try {
         // --- START OF HARDCODED VALUES ---
         const businessId = 'voice-sell-ai'; // Matches BUSINESS_NAME=Voice Sell AI
-        const apiUrl = 'http://127.0.0.1:8002'; // The open-source token server
+        const apiUrl = 'https://online-booking-token.onrender.com'; // The deployed token server
         const livekitUrl = 'wss://fansfit-gogh835r.livekit.cloud'; // Your LiveKit URL
         // --- END OF HARDCODED VALUES ---
 
