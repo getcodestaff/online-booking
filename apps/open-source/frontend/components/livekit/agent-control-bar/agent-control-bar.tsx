@@ -9,7 +9,7 @@ import { ChatInput } from '@/components/livekit/chat/chat-input';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
 import { AppConfig } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../lib/utils';
 import { DeviceSelect } from '../device-select';
 import { TrackToggle } from '../track-toggle';
 import { UseAgentControlBarProps, useAgentControlBar } from './hooks/use-agent-control-bar';
