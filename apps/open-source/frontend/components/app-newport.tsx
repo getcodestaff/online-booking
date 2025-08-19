@@ -1,3 +1,5 @@
+"use client";
+
 import { SessionView } from "./session-view";
 import { useConnectionDetailsNewport } from "@/hooks/useConnectionDetailsNewport";
 
