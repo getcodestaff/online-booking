@@ -144,8 +144,8 @@ def prewarm(proc: agents.JobProcess):
     proc.userdata["vad"] = silero.VAD.load()
     logging.info("Prewarm complete: VAD model loaded.")
     
-    proc.userdata["tts"] = cartesia.TTS(voice_id="095ba65e-b324-4687-9621-b8e5f6a6fa76")
-    logging.info("Prewarm complete: Cartesia TTS client initialized with voice clone.")
+    proc.userdata["tts"] = cartesia.TTS(model="cartesia/sonic-2", voice_id="095ba65e-b324-4687-9621-b8e5f6a6fa76")
+    logging.info("Prewarm complete: Cartesia TTS client initialized with cartesia/sonic-2 and voice clone.")
 
 if __name__ == "__main__":
     logging.info("Starting InputRight (Open Source) Agent Worker...")

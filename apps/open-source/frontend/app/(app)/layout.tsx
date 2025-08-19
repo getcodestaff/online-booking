@@ -18,11 +18,11 @@ export default async function AppLayout({ children }: AppLayoutProps) {
           href="https://voicesellai.com"
           className="scale-100 transition-transform duration-300 hover:scale-110"
         >
-          <img src={logo} alt={`${companyName} Logo`} className="block h-6 w-24 dark:hidden" />
+          <img src={logo} alt={`${companyName} Logo`} className="block h-8 w-32 dark:hidden" />
           <img
             src={logoDark ?? logo}
             alt={`${companyName} Logo`}
-            className="hidden h-6 w-24 dark:block"
+            className="hidden h-8 w-32 dark:block"
           />
         </a>
         <span className="text-foreground font-mono text-xs font-bold tracking-wider uppercase">
