@@ -38,9 +38,10 @@ export async function GET(request: NextRequest) {
     const token = at.toJwt();
 
     return NextResponse.json({
-      token,
+      serverUrl: wsUrl,
       roomName,
-      wsUrl,
+      participantName: participantIdentity,
+      participantToken: token,
     });
   } catch (error) {
     console.error("Error generating connection details:", error);

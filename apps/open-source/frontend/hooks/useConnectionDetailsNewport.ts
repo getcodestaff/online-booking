@@ -1,43 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect } from 'react';
 
-interface ConnectionDetails {
-  token: string;
+export type ConnectionDetails = {
+  serverUrl: string;
   roomName: string;
-}
+  participantName: string;
+  participantToken: string;
+};
 
 export function useConnectionDetailsNewport() {
-  const [token, setToken] = useState<string>("");
-  const [roomName, setRoomName] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [connectionDetails, setConnectionDetails] = useState<ConnectionDetails | null>(null);
 
-  useEffect(() => {
-    async function getConnectionDetails() {
+  const fetchConnectionDetails = useCallback(() => {
+    setConnectionDetails(null);
+    const getDetails = async () => {
       try {
-        setIsLoading(true);
-        setError(null);
-
-        const response = await fetch("/api/connection-details-newport");
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        const resp = await fetch('/api/connection-details-newport');
+        if (!resp.ok) {
+          throw new Error(`Failed to fetch connection details: ${resp.statusText}`);
         }
-
-        const data: ConnectionDetails = await response.json();
-        
-        setToken(data.token);
-        setRoomName(data.roomName);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to get connection details");
-      } finally {
-        setIsLoading(false);
+        const data = await resp.json();
+        setConnectionDetails(data);
+      } catch (error) {
+        console.error('Error fetching connection details:', error);
       }
-    }
-
-    getConnectionDetails();
+    };
+    getDetails();
   }, []);
 
-  return { token, roomName, isLoading, error };
+  useEffect(() => {
+    fetchConnectionDetails();
+  }, [fetchConnectionDetails]);
+
+  return { connectionDetails, refreshConnectionDetails: fetchConnectionDetails };
 }
