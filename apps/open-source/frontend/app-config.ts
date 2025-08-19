@@ -1,18 +1,18 @@
 import type { AppConfig } from './lib/types';
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'LiveKit',
-  pageTitle: 'LiveKit Voice Agent',
-  pageDescription: 'A voice agent built with LiveKit',
+  companyName: 'Voice Sell AI',
+  pageTitle: 'Voice Sell AI - Voice Booking Agent',
+  pageDescription: 'AI-powered voice booking assistant',
 
   supportsChatInput: true,
   supportsVideoInput: true,
   supportsScreenShare: true,
   isPreConnectBufferEnabled: false,
 
-  logo: '/lk-logo.svg',
-  accent: '#002cf2',
-  logoDark: '/lk-logo-dark.svg',
-  accentDark: '#1fd5f9',
-  startButtonText: 'Start call',
+  logo: '/voice-sell-logo.png',
+  accent: '#3b82f6',
+  logoDark: '/voice-sell-logo.png',
+  accentDark: '#60a5fa',
+  startButtonText: 'Start Booking Call',
 };
