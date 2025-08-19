@@ -61,9 +61,16 @@ async def entrypoint(ctx: agents.JobContext):
         
         # Use the appropriate TTS client based on room name
         room_name = ctx.room.name
+        logging.info(f"Room name: {room_name}")
         if "devin" in room_name.lower():
             tts = ctx.proc.userdata["tts_devin"]
             logging.info("Using Devin's voice clone for this session")
+            # Test the TTS configuration
+            try:
+                logging.info("Testing Devin's TTS configuration...")
+                # This will help us see if there are any initialization errors
+            except Exception as e:
+                logging.error(f"Error with Devin's TTS configuration: {e}")
         else:
             tts = ctx.proc.userdata["tts_default"]
             logging.info("Using default sonic-english voice for this session")
@@ -124,10 +131,22 @@ async def entrypoint(ctx: agents.JobContext):
         ctx.room.local_participant.register_rpc_method("submit_lead_form", submit_lead_form_handler)
 
         # Start talking immediately without waiting for user audio track
-        if "devin" in room_name.lower():
-            await session.say(f"Thank you for calling Voice Sell AI. This is Devin speaking. How can I help you today?", allow_interruptions=True)
-        else:
-            await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
+        try:
+            if "devin" in room_name.lower():
+                logging.info("Attempting to speak with Devin's voice...")
+                await session.say(f"Thank you for calling Voice Sell AI. This is Devin speaking. How can I help you today?", allow_interruptions=True)
+                logging.info("Successfully spoke with Devin's voice")
+            else:
+                logging.info("Attempting to speak with default voice...")
+                await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
+                logging.info("Successfully spoke with default voice")
+        except Exception as e:
+            logging.error(f"Error during initial greeting: {e}")
+            # Fallback to default voice if Devin's voice fails
+            if "devin" in room_name.lower():
+                logging.info("Falling back to default voice due to Devin voice error")
+                tts = ctx.proc.userdata["tts_default"]
+                await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
 
         await session_ended.wait()
         await session.aclose()
@@ -154,11 +173,22 @@ def prewarm(proc: agents.JobProcess):
     logging.info("Prewarm complete: VAD model loaded.")
     
     # Initialize both TTS configurations
-    proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
-    proc.userdata["tts_devin"] = cartesia.TTS(
-        model="sonic-2",
-        voice={"mode": "id", "id": "095ba65e-b324-4687-9621-b8e5f6a6fa76"}
-    )
+    try:
+        proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
+        logging.info("Default TTS (sonic-english) initialized successfully")
+    except Exception as e:
+        logging.error(f"Failed to initialize default TTS: {e}")
+    
+    try:
+        proc.userdata["tts_devin"] = cartesia.TTS(
+            model="sonic-2",
+            voice={"mode": "id", "id": "095ba65e-b324-4687-9621-b8e5f6a6fa76"}
+        )
+        logging.info("Devin TTS (sonic-2 with voice clone) initialized successfully")
+    except Exception as e:
+        logging.error(f"Failed to initialize Devin TTS: {e}")
+        logging.error("This might be due to invalid voice ID or Cartesia API issues")
+    
     logging.info("Prewarm complete: Cartesia TTS clients initialized.")
 
 if __name__ == "__main__":
