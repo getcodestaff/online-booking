@@ -129,10 +129,10 @@ async def entrypoint(ctx: agents.JobContext):
         ctx.shutdown()
 
 async def request_fnc(req: JobRequest):
-    logging.info(f"Received job request {req.job.id} for room {req.job.room_name}")
+    logging.info(f"Received job request {req.job.id} for room {req.job.room}")
     
     # Accept ALL jobs for now to debug
-    logging.info(f"Accepting job {req.job.id} for room {req.job.room_name}")
+    logging.info(f"Accepting job {req.job.id} for room {req.job.room}")
     await req.accept(identity="voice-sell-agent")
 
 def prewarm(proc: agents.JobProcess):
