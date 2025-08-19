@@ -6,7 +6,7 @@ import {
   useRoomContext,
   useTranscriptions,
 } from '@livekit/components-react';
-import { transcriptionToChatMessage } from '../lib/utils';
+import { transcriptionToChatMessage } from '@/lib/utils';
 
 export default function useChatAndTranscription() {
   const transcriptions: TextStreamData[] = useTranscriptions();

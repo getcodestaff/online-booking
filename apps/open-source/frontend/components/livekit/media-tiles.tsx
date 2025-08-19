@@ -7,7 +7,7 @@ import {
   useTracks,
   useVoiceAssistant,
 } from '@livekit/components-react';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 import { AgentTile } from './agent-tile';
 import { AvatarTile } from './avatar-tile';
 import { VideoTile } from './video-tile';

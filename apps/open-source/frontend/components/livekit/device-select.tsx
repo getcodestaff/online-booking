@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 
 type DeviceSelectProps = React.ComponentProps<typeof SelectTrigger> & {
   kind: MediaDeviceKind;

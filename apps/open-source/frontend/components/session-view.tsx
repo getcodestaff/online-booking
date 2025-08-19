@@ -16,7 +16,7 @@ import { MediaTiles } from '@/components/livekit/media-tiles';
 import useChatAndTranscription from '@/hooks/useChatAndTranscription';
 import { useDebugMode } from '@/hooks/useDebug';
 import type { AppConfig } from '@/lib/types';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 
 function isAgentAvailable(agentState: AgentState) {
   return agentState == 'listening' || agentState == 'thinking' || agentState == 'speaking';
