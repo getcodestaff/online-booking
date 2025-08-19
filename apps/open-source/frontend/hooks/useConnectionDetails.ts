@@ -14,40 +14,16 @@ export default function useConnectionDetails() {
     setConnectionDetails(null);
     const getDetails = async () => {
       try {
-        // --- START OF HARDCODED VALUES ---
-        const businessId = 'voice-sell-ai'; // Matches BUSINESS_NAME=Voice Sell AI
-        const apiUrl = 'https://online-booking-token.onrender.com'; // The deployed token server
-        const livekitUrl = 'wss://fansfit-gogh835r.livekit.cloud'; // Your LiveKit URL
-        // --- END OF HARDCODED VALUES ---
-
-        // 1. Generate a unique identifier for this specific conversation
-        const conversationId = crypto.randomUUID();
-        const roomName = `${businessId}_${conversationId}`; // Updated room name construction
-
-        const resp = await fetch(`${apiUrl}/api/token`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          // 2. Send both the business_id and the unique roomName to the backend
-          body: JSON.stringify({
-            business_id: businessId, // Renamed field in the request body
-            room_name: roomName,
-          }),
-        });
+        // Use the client-side token generation approach
+        const resp = await fetch('/api/connection-details');
 
         if (!resp.ok) {
           const errorBody = await resp.text();
-          throw new Error(`Failed to fetch token: ${resp.statusText}. Body: ${errorBody}`);
+          throw new Error(`Failed to fetch connection details: ${resp.statusText}. Body: ${errorBody}`);
         }
 
         const data = await resp.json();
-
-        const details: ConnectionDetails = {
-          serverUrl: livekitUrl,
-          roomName: roomName, // 3. Use the unique roomName to connect
-          participantName: 'Website Visitor',
-          participantToken: data.token,
-        };
-        setConnectionDetails(details);
+        setConnectionDetails(data);
       } catch (error) {
         console.error('Error fetching connection details:', error);
       }
