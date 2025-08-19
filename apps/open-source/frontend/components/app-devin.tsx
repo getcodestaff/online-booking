@@ -8,23 +8,22 @@ import { toastAlert } from '@/components/alert-toast';
 import { SessionView } from '@/components/session-view';
 import { Toaster } from '@/components/ui/sonner';
 import { Welcome } from '@/components/welcome';
-import useConnectionDetails from '@/hooks/useConnectionDetails';
+import useConnectionDetailsDevin from '@/hooks/useConnectionDetailsDevin';
 import type { AppConfig } from '@/lib/types';
 import { LeadCaptureForm } from '@/src/LeadCaptureForm';
 import { LiveKitSessionManager } from './livekit-session-manager';
 
 const MotionWelcome = motion.create(Welcome);
 
-interface AppProps {
+interface AppDevinProps {
   appConfig: AppConfig;
   livekitUrl?: string;
   apiUrl?: string;
-  voiceId?: string;
 }
 
-export function App({ appConfig, livekitUrl, apiUrl, voiceId }: AppProps) {
+export function AppDevin({ appConfig, livekitUrl, apiUrl }: AppDevinProps) {
   const [sessionStarted, setSessionStarted] = useState(false);
-  const { connectionDetails, refreshConnectionDetails } = useConnectionDetails();
+  const { connectionDetails, refreshConnectionDetails } = useConnectionDetailsDevin();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [leadData, setLeadData] = useState(null);
 
@@ -49,7 +48,7 @@ export function App({ appConfig, livekitUrl, apiUrl, voiceId }: AppProps) {
     try {
       const payload = JSON.stringify(data);
       await room.localParticipant.performRpc({
-        destinationIdentity: 'input-right-agent', // Corrected agent identity
+        destinationIdentity: 'voice-sell-agent', // Corrected agent identity
         method: 'submit_lead_form',
         payload: payload,
       });
@@ -77,7 +76,7 @@ export function App({ appConfig, livekitUrl, apiUrl, voiceId }: AppProps) {
     <>
       <MotionWelcome
         key="welcome"
-        startButtonText={appConfig.startButtonText}
+        startButtonText="Start Call with Devin"
         onStartCall={() => setSessionStarted(true)}
         disabled={sessionStarted || !connectionDetails}
         initial={{ opacity: 0 }}

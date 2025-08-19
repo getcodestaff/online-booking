@@ -59,8 +59,14 @@ async def entrypoint(ctx: agents.JobContext):
         # Use the pre-warmed VAD model from userdata
         vad = ctx.proc.userdata["vad"]
         
-        # Use the pre-warmed TTS client from the prewarm function
-        tts = ctx.proc.userdata["tts"]
+        # Use the appropriate TTS client based on room name
+        room_name = ctx.room.name
+        if "devin" in room_name.lower():
+            tts = ctx.proc.userdata["tts_devin"]
+            logging.info("Using Devin's voice clone for this session")
+        else:
+            tts = ctx.proc.userdata["tts_default"]
+            logging.info("Using default sonic-english voice for this session")
 
         session = agents.AgentSession(
             stt=stt,
@@ -118,7 +124,10 @@ async def entrypoint(ctx: agents.JobContext):
         ctx.room.local_participant.register_rpc_method("submit_lead_form", submit_lead_form_handler)
 
         # Start talking immediately without waiting for user audio track
-        await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
+        if "devin" in room_name.lower():
+            await session.say(f"Thank you for calling Voice Sell AI. This is Devin speaking. How can I help you today?", allow_interruptions=True)
+        else:
+            await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
 
         await session_ended.wait()
         await session.aclose()
@@ -144,8 +153,13 @@ def prewarm(proc: agents.JobProcess):
     proc.userdata["vad"] = silero.VAD.load()
     logging.info("Prewarm complete: VAD model loaded.")
     
-    proc.userdata["tts"] = cartesia.TTS(model="sonic-english")
-    logging.info("Prewarm complete: Cartesia TTS client initialized.")
+    # Initialize both TTS configurations
+    proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
+    proc.userdata["tts_devin"] = cartesia.TTS(
+        model="sonic-2",
+        voice={"mode": "id", "id": "095ba65e-b324-4687-9621-b8e5f6a6fa76"}
+    )
+    logging.info("Prewarm complete: Cartesia TTS clients initialized.")
 
 if __name__ == "__main__":
     logging.info("Starting InputRight (Open Source) Agent Worker...")
