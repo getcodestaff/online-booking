@@ -180,10 +180,10 @@ def prewarm(proc: agents.JobProcess):
     proc.userdata["vad"] = silero.VAD.load()
     logging.info("Prewarm complete: VAD model loaded.")
     
-            # Initialize TTS configuration
-        proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
-        logging.info("TTS created successfully")
-        logging.info("Prewarm complete: Cartesia TTS client initialized.")
+    # Initialize TTS configuration
+    proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
+    logging.info("TTS created successfully")
+    logging.info("Prewarm complete: Cartesia TTS client initialized.")
 
 if __name__ == "__main__":
     logging.info("Starting InputRight (Open Source) Agent Worker...")
