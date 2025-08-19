@@ -119,7 +119,7 @@ async def entrypoint(ctx: agents.JobContext):
 
         try:
             await asyncio.wait_for(greeting_allowed.wait(), timeout=20.0)
-            await session.say(f"Thank you for calling {os.getenv('BUSINESS_NAME', 'the company')}. How can I help you today?", allow_interruptions=True)
+            await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
         except asyncio.TimeoutError:
             logging.warning("Timed out waiting for user audio track. Not sending greeting.")
             session_ended.set()
@@ -133,8 +133,15 @@ async def entrypoint(ctx: agents.JobContext):
         ctx.shutdown()
 
 async def request_fnc(req: JobRequest):
-    logging.info(f"Accepting job {req.job.id} for open-source agent")
-    await req.accept(identity="input-right-agent")
+    logging.info(f"Received job request {req.job.id} for room {req.job.room_name}")
+    
+    # Accept jobs for rooms that start with "voice-sell-ai"
+    if req.job.room_name.startswith("voice-sell-ai"):
+        logging.info(f"Accepting job {req.job.id} for voice-sell-ai room")
+        await req.accept(identity="voice-sell-agent")
+    else:
+        logging.info(f"Rejecting job {req.job.id} - room name doesn't match expected pattern")
+        await req.reject()
 
 def prewarm(proc: agents.JobProcess):
     # This function is called once when a new job process starts.
