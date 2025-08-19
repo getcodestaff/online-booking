@@ -8,7 +8,7 @@ load_dotenv()
 
 async def run_agent():
     """Run the agent worker process"""
-    process = subprocess.Popen([sys.executable, "main.py"])
+    process = subprocess.Popen([sys.executable, "main.py", "start"])
     return process
 
 async def run_health_check():
