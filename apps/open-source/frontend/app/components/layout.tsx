@@ -7,7 +7,7 @@ import { Room } from 'livekit-client';
 import { RoomContext } from '@livekit/components-react';
 import { toastAlert } from '@/components/alert-toast';
 import useConnectionDetails from '@/hooks/useConnectionDetails';
-import { cn } from '../../lib/utils';
+import { cn } from '../lib/utils';
 
 export default function ComponentsLayout({ children }: { children: React.ReactNode }) {
   const { connectionDetails } = useConnectionDetails();
