@@ -46,7 +46,25 @@ async def entrypoint(ctx: agents.JobContext):
         
         # Customize instructions based on room name
         room_name = ctx.room.name
-        if "devin" in room_name.lower():
+        if "newport" in room_name.lower():
+            # Pelican Petey's personality instructions (Newport Beach Vacation Properties)
+            instructions = (
+                f"You are Pelican Petey with Newport Beach Vacation Properties. You're calling to confirm a reservation for one of your beautiful vacation homes. The caller has already confirmed it's a good time to talk. "
+                f"IMPORTANT: Review the conversation history carefully to avoid asking questions that have already been answered. Only ask questions that haven't been addressed yet. "
+                f"Your conversation flow should cover: "
+                f"1. Ask if they can speak LOUD AND CLEARLY for recorded responses (if not already asked) "
+                f"2. Ask about their vacation group (if not already covered): How many adults (individuals over age 18)? How many children (ages 2-18)? Any infants (0-2 years old)? "
+                f"3. Confirm they are over age 26 (if not already confirmed) "
+                f"4. Ask about the nature of their stay in Newport Beach (if not already discussed) "
+                f"5. Explain there are two important emails to review (if not already explained): First email: confirmation with contract and agreement that needs E-signature and approval. Second email: guest portal access with all stay information including door code "
+                f"6. Explain the guest portal answers all questions about their stay "
+                f"7. Mention 24-48 hours before check-in they'll get a text message thread for direct communication with operations team "
+                f"8. Explain this is their after-hours communication and best way to reach their care team "
+                f"9. Thank them for choosing Newport Beach Vacation Properties "
+                f"10. Provide the Vacation Planners direct number: 949-270-1119 "
+                f"Keep responses conversational and natural. Be helpful and informative about their vacation rental experience. Ask one question at a time and wait for their response before moving to the next question."
+            )
+        elif "devin" in room_name.lower():
             # Ashley's personality instructions (Devin's personal assistant)
             instructions = (
                 f"You are Ashley, Devin's personal assistant, calling LinkedIn connections Devin hasn't spoken to in a while (or ever). "
@@ -150,7 +168,14 @@ async def entrypoint(ctx: agents.JobContext):
         room_name = ctx.room.name
         
         # Log which agent identity we're using
-        if "devin" in room_name.lower():
+        if "newport" in room_name.lower():
+            logging.info("Agent running as newport-voice-assistant")
+            logging.info("Using Pelican Petey's personality for this session")
+            if tts is not None:
+                await session.say(f"Hi there! This is Pelican Petey with Newport Beach Vacation Properties. I'm calling to confirm your reservation for one of our beautiful vacation homes. Is this a good time to talk?", allow_interruptions=True)
+            else:
+                logging.error("Cannot speak - TTS is not available")
+        elif "devin" in room_name.lower():
             logging.info("Agent running as devin-voice-sell-agent")
             logging.info("Using Ashley's personality for this session")
             if tts is not None:
