@@ -12,7 +12,7 @@ import {
   VideoCameraSlashIcon,
 } from '@phosphor-icons/react/dist/ssr';
 import { Toggle } from '@/components/ui/toggle';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 export type TrackToggleProps = React.ComponentProps<typeof Toggle> & {
   source: Parameters<typeof useTrackToggle>[0]['source'];
