@@ -1,19 +1,19 @@
 'use client';
 
-import { LeadCaptureForm } from '@/src/LeadCaptureForm';
 import { useState } from 'react';
 import { Room } from 'livekit-client';
 import { motion } from 'motion/react';
 import { LiveKitRoom, RoomAudioRenderer, StartAudio } from '@livekit/components-react';
-import { toastAlert } from '@/components/alert-toast';import { SessionView } from '@/components/session-view';
+import { toastAlert } from '@/components/alert-toast';
+import { SessionView } from '@/components/session-view';
 import { Toaster } from '@/components/ui/sonner';
 import { Welcome } from '@/components/welcome';
 import useConnectionDetails from '@/hooks/useConnectionDetails';
 import type { AppConfig } from '@/lib/types';
+import { LeadCaptureForm } from '@/src/LeadCaptureForm';
 import { LiveKitSessionManager } from './livekit-session-manager';
 
 const MotionWelcome = motion.create(Welcome);
-
 
 interface AppProps {
   appConfig: AppConfig;
@@ -31,7 +31,6 @@ export function App({ appConfig, livekitUrl, apiUrl }: AppProps) {
     console.log(`[${new Date().toISOString()}] APP: Disconnected from room.`);
     setSessionStarted(false);
     refreshConnectionDetails();
-    
   };
 
   const onMediaDevicesError = (error: Error) => {
@@ -41,16 +40,16 @@ export function App({ appConfig, livekitUrl, apiUrl }: AppProps) {
     });
   };
 
-    const handleFormSubmit = async (room: Room, data: any) => {
+  const handleFormSubmit = async (room: Room, data: any) => {
     if (!room || !room.localParticipant) {
-      console.error("Room instance not available for RPC.");
+      console.error('Room instance not available for RPC.');
       return;
     }
     try {
       const payload = JSON.stringify(data);
       await room.localParticipant.performRpc({
-      destinationIdentity: "input-right-agent", // Corrected agent identity
-        method: "submit_lead_form",
+        destinationIdentity: 'input-right-agent', // Corrected agent identity
+        method: 'submit_lead_form',
         payload: payload,
       });
       toastAlert({
@@ -85,14 +84,13 @@ export function App({ appConfig, livekitUrl, apiUrl }: AppProps) {
         transition={{ duration: 0.5, ease: 'linear', delay: sessionStarted ? 0 : 0.5 }}
       />
 
-            {sessionStarted && connectionDetails && (
-                <LiveKitRoom
+      {sessionStarted && connectionDetails && (
+        <LiveKitRoom
           serverUrl={connectionDetails.serverUrl}
           token={connectionDetails.participantToken}
           audio={true}
           onConnected={() => {
             console.log(`[${new Date().toISOString()}] APP: LiveKitRoom connected.`);
-            
           }}
           onDisconnected={onDisconnected}
           onError={onMediaDevicesError}
@@ -111,18 +109,18 @@ export function App({ appConfig, livekitUrl, apiUrl }: AppProps) {
             <SessionView appConfig={appConfig} />
           </motion.div>
 
-          <LiveKitSessionManager 
-            appConfig={appConfig} 
+          <LiveKitSessionManager
+            appConfig={appConfig}
             onDisplayForm={(data) => {
               setLeadData(data);
               setIsFormVisible(true);
-            }} 
+            }}
           />
 
           {isFormVisible && leadData && (
             <LeadCaptureForm
               initialData={leadData as any}
-                        onSubmit={(room, data) => handleFormSubmit(room, data)}
+              onSubmit={(room, data) => handleFormSubmit(room, data)}
               onCancel={handleFormCancel}
             />
           )}
@@ -130,6 +128,6 @@ export function App({ appConfig, livekitUrl, apiUrl }: AppProps) {
       )}
 
       <Toaster />
-      </>
+    </>
   );
 }

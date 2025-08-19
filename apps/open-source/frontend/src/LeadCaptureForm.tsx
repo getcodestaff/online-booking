@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useRoomContext } from '@livekit/components-react';
+import React, { useEffect, useState } from 'react';
 import { Room } from 'livekit-client';
+import { useRoomContext } from '@livekit/components-react';
 
 export interface LeadData {
   name: string;
@@ -15,24 +15,28 @@ interface LeadCaptureFormProps {
   onCancel: () => void;
 }
 
-export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({ initialData, onSubmit, onCancel }) => {
+export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
+  initialData,
+  onSubmit,
+  onCancel,
+}) => {
   const room = useRoomContext();
   const [formData, setFormData] = useState<LeadData>({
-      name: '',
-      inquiry: '',
-      email: '',
-      phone: ''
+    name: '',
+    inquiry: '',
+    email: '',
+    phone: '',
   });
 
   useEffect(() => {
-    console.log("LeadCaptureForm received initialData:", initialData);
+    console.log('LeadCaptureForm received initialData:', initialData);
     // The actual lead data is inside the 'payload' property, which is a JSON string
     const leadDetails = JSON.parse(initialData.payload);
     setFormData({
       name: leadDetails.name || '',
       inquiry: leadDetails.inquiry || '',
       email: leadDetails.email || '',
-      phone: leadDetails.phone || ''
+      phone: leadDetails.phone || '',
     });
   }, [initialData]);
 
@@ -58,19 +62,34 @@ export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({ initialData, o
           </div>
           <div className="form-group">
             <label htmlFor="inquiry">Your Inquiry</label>
-            <textarea id="inquiry" value={formData.inquiry} onChange={handleChange} rows={3}></textarea>
+            <textarea
+              id="inquiry"
+              value={formData.inquiry}
+              onChange={handleChange}
+              rows={3}
+            ></textarea>
           </div>
           <div className="form-group">
             <label htmlFor="email">Email Address (Required)</label>
-            <input type="email" id="email" value={formData.email} onChange={handleChange} required />
+            <input
+              type="email"
+              id="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className="form-group">
             <label htmlFor="phone">Phone Number (Optional)</label>
             <input type="tel" id="phone" value={formData.phone} onChange={handleChange} />
           </div>
           <div className="form-actions">
-            <button type="button" className="button-secondary" onClick={onCancel}>Cancel</button>
-            <button type="submit" className="button-primary">Looks Good, Send It</button>
+            <button type="button" className="button-secondary" onClick={onCancel}>
+              Cancel
+            </button>
+            <button type="submit" className="button-primary">
+              Looks Good, Send It
+            </button>
           </div>
         </form>
       </div>

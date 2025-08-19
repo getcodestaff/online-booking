@@ -26,24 +26,17 @@ interface SessionViewProps {
   appConfig: AppConfig;
 }
 
-export const SessionView = ({
-  appConfig,
-  ref,
-}: React.ComponentProps<'div'> & SessionViewProps) => {
+export const SessionView = ({ appConfig, ref }: React.ComponentProps<'div'> & SessionViewProps) => {
   const { state: agentState } = useVoiceAssistant();
   const [chatOpen, setChatOpen] = useState(false);
   const { messages, send } = useChatAndTranscription();
   const room = useRoomContext();
-
- 
 
   useDebugMode();
 
   async function handleSendMessage(message: string) {
     await send(message);
   }
-
-  
 
   const { supportsChatInput, supportsVideoInput, supportsScreenShare } = appConfig;
   const capabilities = {
@@ -55,7 +48,7 @@ export const SessionView = ({
   return (
     <main
       ref={ref}
-        className={
+      className={
         // prevent page scrollbar
         // when !chatOpen due to 'translate-y-20'
         cn(!chatOpen && 'max-h-svh overflow-hidden')
@@ -92,9 +85,7 @@ export const SessionView = ({
       <MediaTiles chatOpen={chatOpen} />
 
       <div className="bg-background fixed right-0 bottom-0 left-0 z-50 px-3 pt-2 pb-3 md:px-12 md:pb-12">
-                    <motion.div
-        key="control-bar"
-      >
+        <motion.div key="control-bar">
           <div className="relative z-10 mx-auto w-full max-w-2xl">
             {appConfig.isPreConnectBufferEnabled && (
               <motion.div
