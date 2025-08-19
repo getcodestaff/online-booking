@@ -77,16 +77,28 @@ async def entrypoint(ctx: agents.JobContext):
         
         # Use the same TTS client for all sessions
         tts = ctx.proc.userdata["tts_default"]
-        logging.info("Using sonic-english voice for this session")
-
-        session = agents.AgentSession(
-            stt=stt,
-            llm=llm,
-            tts=tts,
-            vad=vad,
-            turn_detection="vad",  # Use the simpler, faster, and stable VAD-based turn detection
-            user_away_timeout=60,  # Wait for 60 seconds of silence before ending
-        )
+        if tts is None:
+            logging.error("TTS is not available - agent will not be able to speak")
+            logging.error("Please check your Cartesia API key or add credits to your account")
+            # Create session without TTS - agent will still process but won't speak
+            session = agents.AgentSession(
+                stt=stt,
+                llm=llm,
+                tts=None,  # No TTS available
+                vad=vad,
+                turn_detection="vad",  # Use the simpler, faster, and stable VAD-based turn detection
+                user_away_timeout=60,  # Wait for 60 seconds of silence before ending
+            )
+        else:
+            logging.info("Using sonic-english voice for this session")
+            session = agents.AgentSession(
+                stt=stt,
+                llm=llm,
+                tts=tts,
+                vad=vad,
+                turn_detection="vad",  # Use the simpler, faster, and stable VAD-based turn detection
+                user_away_timeout=60,  # Wait for 60 seconds of silence before ending
+            )
         agent = BusinessAgent(instructions=instructions)
 
         @session.on("user_state_changed")
@@ -141,11 +153,17 @@ async def entrypoint(ctx: agents.JobContext):
         if "devin" in room_name.lower():
             logging.info("Agent running as devin-voice-sell-agent")
             logging.info("Using Ashley's personality for this session")
-            await session.say(f"Hi there! This is Ashley, Devin's personal assistant. Devin's been impressed by your LinkedIn profile and work, and wanted me to reach out to reconnect. He mentioned you haven't caught up in a while and thought it'd be great to have a quick 15-minute chat. Are you free to talk for a moment?", allow_interruptions=True)
+            if tts is not None:
+                await session.say(f"Hi! This is Ashley, Devin's assistant. Devin's been following your work on LinkedIn and thought it'd be great to reconnect. You free to talk?", allow_interruptions=True)
+            else:
+                logging.error("Cannot speak - TTS is not available")
         else:
             logging.info("Agent running as voice-sell-agent")
             logging.info("Using default personality for this session")
-            await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
+            if tts is not None:
+                await session.say(f"Thank you for calling Voice Sell AI. How can I help you today?", allow_interruptions=True)
+            else:
+                logging.error("Cannot speak - TTS is not available")
 
         await session_ended.wait()
         await session.aclose()
@@ -171,10 +189,15 @@ def prewarm(proc: agents.JobProcess):
     proc.userdata["vad"] = silero.VAD.load()
     logging.info("Prewarm complete: VAD model loaded.")
     
-    # Initialize TTS configuration
-    proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
-    logging.info("TTS created successfully")
-    logging.info("Prewarm complete: Cartesia TTS client initialized.")
+    # Initialize TTS configuration with error handling
+    try:
+        proc.userdata["tts_default"] = cartesia.TTS(model="sonic-english")
+        logging.info("TTS created successfully")
+        logging.info("Prewarm complete: Cartesia TTS client initialized.")
+    except Exception as e:
+        logging.error(f"Failed to initialize Cartesia TTS: {e}")
+        logging.warning("TTS will not be available - agent will not be able to speak")
+        proc.userdata["tts_default"] = None
 
 if __name__ == "__main__":
     logging.info("Starting InputRight (Open Source) Agent Worker...")
