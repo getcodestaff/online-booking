@@ -129,6 +129,12 @@ async def entrypoint(ctx: agents.JobContext):
 
         await session.start(room=ctx.room, agent=agent)
         ctx.room.local_participant.register_rpc_method("submit_lead_form", submit_lead_form_handler)
+        
+        # Log which agent identity we're using
+        if "devin" in room_name.lower():
+            logging.info("Agent running as devin-voice-sell-agent")
+        else:
+            logging.info("Agent running as voice-sell-agent")
 
         # Start talking immediately without waiting for user audio track
         if "devin" in room_name.lower():
