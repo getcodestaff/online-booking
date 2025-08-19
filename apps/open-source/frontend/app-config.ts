@@ -2,8 +2,8 @@ import type { AppConfig } from './lib/types';
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
   companyName: 'Voice Sell AI',
-  pageTitle: 'Voice Sell AI - Voice Booking Agent',
-  pageDescription: 'AI-powered voice booking assistant',
+  pageTitle: 'Voice Sell AI - Your #1 AI Customer Support and AI Sales Company',
+  pageDescription: 'Voice Sell AI Your #1 AI Customer Support and AI Sales Company',
 
   supportsChatInput: true,
   supportsVideoInput: true,
