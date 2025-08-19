@@ -149,3 +149,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# ssh
+
+*apps/open-source/agent/working_keys.txt
+*apps/open-source/agent/render_ssh_public_key.txt
+*apps/open-source/agent/render_ssh_key.pub
+*apps/open-source/agent/render_ssh_key
