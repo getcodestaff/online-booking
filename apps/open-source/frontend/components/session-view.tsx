@@ -100,7 +100,7 @@ export const SessionView = ({
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{
-                  opacity: sessionStarted && messages.length === 0 ? 1 : 0,
+                  opacity: messages.length === 0 ? 1 : 0,
                   transition: {
                     ease: 'easeIn',
                     delay: messages.length > 0 ? 0 : 0.8,
@@ -110,7 +110,7 @@ export const SessionView = ({
                 aria-hidden={messages.length > 0}
                 className={cn(
                   'absolute inset-x-0 -top-12 text-center',
-                  sessionStarted && messages.length === 0 && 'pointer-events-none'
+                  messages.length === 0 && 'pointer-events-none'
                 )}
               >
                 <p className="animate-text-shimmer inline-block !bg-clip-text text-sm font-semibold text-transparent">

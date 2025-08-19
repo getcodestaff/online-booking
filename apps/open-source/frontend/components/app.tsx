@@ -90,7 +90,7 @@ export function App({ appConfig, livekitUrl, apiUrl }: AppProps) {
           serverUrl={connectionDetails.serverUrl}
           token={connectionDetails.participantToken}
           audio={true}
-          onConnected={(room) => {
+          onConnected={() => {
             console.log(`[${new Date().toISOString()}] APP: LiveKitRoom connected.`);
             
           }}
