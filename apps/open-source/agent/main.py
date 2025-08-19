@@ -135,13 +135,9 @@ async def entrypoint(ctx: agents.JobContext):
 async def request_fnc(req: JobRequest):
     logging.info(f"Received job request {req.job.id} for room {req.job.room_name}")
     
-    # Accept jobs for rooms that start with "voice-sell-ai"
-    if req.job.room_name.startswith("voice-sell-ai"):
-        logging.info(f"Accepting job {req.job.id} for voice-sell-ai room")
-        await req.accept(identity="voice-sell-agent")
-    else:
-        logging.info(f"Rejecting job {req.job.id} - room name doesn't match expected pattern")
-        await req.reject()
+    # Accept ALL jobs for now to debug
+    logging.info(f"Accepting job {req.job.id} for room {req.job.room_name}")
+    await req.accept(identity="voice-sell-agent")
 
 def prewarm(proc: agents.JobProcess):
     # This function is called once when a new job process starts.
